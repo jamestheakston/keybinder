@@ -6,7 +6,7 @@ import subprocess
 from Quartz import (
     CGEventTapCreate,
     kCGEventTapOptionDefault,
-    kCGHIDEventTap,
+    kCGSessionEventTap,
     kCGHeadInsertEventTap,
     kCGEventKeyDown,
     CGEventGetIntegerValueField,
@@ -75,7 +75,7 @@ def action_callback(proxy, type, event, refcon):
 def main():
     print(f"Keybinder running with {len(HOTKEYS)} bound hotkey(s)...")
     tap = CGEventTapCreate(
-        kCGHIDEventTap,
+        kCGSessionEventTap,
         kCGHeadInsertEventTap,
         kCGEventTapOptionDefault,
         (1 << kCGEventKeyDown),
