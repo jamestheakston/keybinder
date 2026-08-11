@@ -17,13 +17,19 @@ git clone https://github.com/jamestheakston/keybinder.git
 cd keybinder
 ```
 
-### 2. Install dependencies
+### 2. Create the requirements file
+
+```bash
+echo -e "pyobjc-core\npyobjc-framework-Quartz\npyinstaller" > requirements.txt
+```
+
+### 3. Install dependencies
 
 ```bash
 pip3 install -r requirements.txt
 ```
 
-### 3. Configure your hotkeys
+### 4. Configure your hotkeys
 
 Open `config.json` and map your custom key names to any shell command or script you want to run:
 
@@ -37,13 +43,13 @@ Open `config.json` and map your custom key names to any shell command or script 
 }
 ```
 
-### 4. Run it directly
+### 5. Run it directly
 
 ```bash
 python3 keybinder.py
 ```
 
-### 5. Build the standalone binary *(Optional)*
+### 6. Build the standalone binary *(Optional)*
 
 If you want to compile Keybinder into a standalone local executable:
 
