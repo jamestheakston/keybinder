@@ -8,7 +8,9 @@ from Quartz import (
     kCGEventTapOptionDefault,
     kCGSessionEventTap,
     kCGHeadInsertEventTap,
+    kCGEventMaskBit,
     kCGEventKeyDown,
+    kCGEventKeyUp,
     CGEventGetIntegerValueField,
     kCGKeyboardEventKeycode,
     CGEventTapEnable,
@@ -66,19 +68,25 @@ HOTKEYS = load_config()
 def action_callback(proxy, type, event, refcon):
     if type == kCGEventKeyDown:
         keycode = CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode)
+        print(f"Key pressed: {keycode}")
         if keycode in HOTKEYS:
             cmd = HOTKEYS[keycode]
+            print(f"Executing command: {cmd}")
             subprocess.Popen(cmd, shell=True)
             return None
+    elif type == kCGEventTapDisabledByTimeout:
+        print("Event tap timed out, re-enabling...")
+        CGEventTapEnable(proxy, True)
     return event
 
 def main():
     print(f"Keybinder running with {len(HOTKEYS)} bound hotkey(s)...")
+    event_mask = (1 << kCGEventKeyDown) | (1 << kCGEventKeyUp)
     tap = CGEventTapCreate(
         kCGSessionEventTap,
         kCGHeadInsertEventTap,
         kCGEventTapOptionDefault,
-        (1 << kCGEventKeyDown),
+        event_mask,
         action_callback,
         None
     )
