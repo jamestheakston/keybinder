@@ -1,0 +1,7 @@
+{
+    "hotkeys": {
+        "f1": "open -a Terminal",
+        "space": "say 'this is working'",
+        "a": "open -a Safari"
+    }
+}
