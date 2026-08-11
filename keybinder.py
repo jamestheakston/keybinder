@@ -6,7 +6,8 @@ import subprocess
 from Quartz import (
     CGEventTapCreate,
     kCGEventTapOptionDefault,
-    kCGHeadEventTypeSession,
+    kCGHIDEventTap,
+    kCGHeadInsertEventTap,
     kCGEventKeyDown,
     CGEventGetIntegerValueField,
     kCGKeyboardEventKeycode,
@@ -17,7 +18,6 @@ from Quartz import (
     CFRunLoopRun,
 )
 
-# Map human-readable key strings to macOS virtual keycodes
 STRING_TO_KEYCODE = {
     "a": 0, "s": 1, "d": 2, "f": 3, "h": 4, "g": 5, "z": 6, "x": 7, "c": 8, "v": 9,
     "b": 11, "q": 12, "w": 13, "e": 14, "r": 15, "y": 16, "t": 17, "1": 18, "2": 19,
@@ -29,7 +29,6 @@ STRING_TO_KEYCODE = {
     "f8": 100, "f9": 101, "f10": 109, "f11": 103, "f12": 111
 }
 
-# Invert it so we can map keycode back to name if needed, or check directly
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 
 def load_config():
@@ -37,7 +36,7 @@ def load_config():
         default_config = {
             "hotkeys": {
                 "f1": "open -a Terminal",
-                "space": "echo 'Hello from spacebar!'"
+                "space": "say 'This is working!'"
             }
         }
         with open(CONFIG_PATH, "w") as f:
@@ -51,7 +50,6 @@ def load_config():
             print(f"Error reading config.json: {e}")
             default_config = {}
 
-    # Translate string keys (e.g., "f1", "space") into their numeric macOS keycodes
     resolved_hotkeys = {}
     for key_name, command in default_config.items():
         key_lower = key_name.lower()
@@ -77,9 +75,9 @@ def action_callback(proxy, type, event, refcon):
 def main():
     print(f"Keybinder running with {len(HOTKEYS)} bound hotkey(s)...")
     tap = CGEventTapCreate(
-        kCGHeadEventTypeSession,
+        kCGHIDEventTap,
+        kCGHeadInsertEventTap,
         kCGEventTapOptionDefault,
-        kCGHeadEventTypeSession,
         (1 << kCGEventKeyDown),
         action_callback,
         None
@@ -89,7 +87,7 @@ def main():
         sys.exit(1)
         
     loop_source = CFMachPortCreateRunLoopSource(None, tap, 0)
-    CFRunLoopAddSource(CFRunLoopGetMain(), loop_source, kCGHeadEventTypeSession)
+    CFRunLoopAddSource(CFRunLoopGetMain(), loop_source, kCGHeadInsertEventTap)
     CGEventTapEnable(tap, True)
     CFRunLoopRun()
 
