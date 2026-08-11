@@ -22,6 +22,7 @@ cd keybinder
 ```bash
 echo -e "pyobjc-core\npyobjc-framework-Quartz\npyinstaller" > requirements.txt
 ```
+If you get an error saying the file already exists, skip this step.
 
 ### 3. Install dependencies
 
